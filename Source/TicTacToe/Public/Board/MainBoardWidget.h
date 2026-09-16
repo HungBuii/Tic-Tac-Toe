@@ -32,4 +32,7 @@ private:
 	
 	TArray<UCellBoardWidget*> Cells;
 	
+public:
+	void OnCellClicked(int Row, int Col, FString Symbol);
+	
 };

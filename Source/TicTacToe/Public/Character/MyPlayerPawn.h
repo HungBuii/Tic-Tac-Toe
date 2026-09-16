@@ -33,6 +33,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "HUD", meta=(AllowPrivateAccess=true))
 	TSubclassOf<UMainBoardWidget> MainBoardHUDClass;
 	
+public:
 	UPROPERTY(VisibleAnywhere, Category = "HUD", meta=(AllowPrivateAccess=true))
 	TObjectPtr<UMainBoardWidget> MainBoardWidget;
 

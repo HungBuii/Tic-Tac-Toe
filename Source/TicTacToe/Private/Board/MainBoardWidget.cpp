@@ -13,6 +13,10 @@ void UMainBoardWidget::GenerateBoard()
 		for (int Col = 0; Col < 3; Col++)
 		{
 			UCellBoardWidget* NewCell = CreateWidget<UCellBoardWidget>(GetWorld(), CellBoardWidgetClass);
+			NewCell->SetCellRow(Row);
+			NewCell->SetCellColumn(Col);
+			NewCell->SetButtonMargin(Row, Col);
+			NewCell->SetSymbolText("");
 			
 			if (GridPanel)
 			{
@@ -21,5 +25,15 @@ void UMainBoardWidget::GenerateBoard()
 			
 			Cells.Add(NewCell);
 		}
+	}
+}
+
+void UMainBoardWidget::OnCellClicked(int Row, int Col, FString Symbol)
+{
+	int CellIndex = Row * 3 + Col;
+
+	if (Cells.IsValidIndex(CellIndex))
+	{
+		Cells[CellIndex]->SetSymbolText(Symbol);
 	}
 }
