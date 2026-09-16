@@ -30,7 +30,7 @@ public:
 	
 private:
 	/** Main Board */
-	UPROPERTY(EditAnywhere, Category = "HUD", meta=(AllowPrivateAccess=true))
+	UPROPERTY(EditDefaultsOnly, Category = "HUD", meta=(AllowPrivateAccess=true))
 	TSubclassOf<UMainBoardWidget> MainBoardHUDClass;
 	
 	UPROPERTY(VisibleAnywhere, Category = "HUD", meta=(AllowPrivateAccess=true))
