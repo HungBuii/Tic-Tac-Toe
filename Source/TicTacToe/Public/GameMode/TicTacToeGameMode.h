@@ -31,9 +31,17 @@ private:
 public:
 	void PlayerMove(int Row, int Col);
 	
+	void SwitchTurn();
+	
+	/** AI Turn */
+	void AIMove();
+	
 private:
 	/** definition board 3x3 */
 	int Grid[3][3];
 	
-
+public:
+	/** check grid is full? */
+	bool IsFullGrid();
+	
 };

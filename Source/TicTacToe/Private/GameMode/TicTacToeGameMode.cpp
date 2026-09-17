@@ -18,14 +18,64 @@ void ATicTacToeGameMode::BeginPlay()
 
 void ATicTacToeGameMode::PlayerMove(int Row, int Col)
 {
-	if (bIsPlayerTurn)
+	if (bIsPlayerTurn && !IsFullGrid())
 	{
 		if (Grid[Row][Col] == 0) // its empty 
 		{
-			Grid[Row][Col] = 1; // 1: represent the player
+			Grid[Row][Col] = 1; // 1: represent the Player
 			
 			AMyPlayerPawn* MyPlayerPawn = Cast<AMyPlayerPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 			MyPlayerPawn->MainBoardWidget->OnCellClicked(Row, Col, "X");
 		}
+		
+		SwitchTurn();
 	}
+}
+
+void ATicTacToeGameMode::SwitchTurn()
+{
+	bIsPlayerTurn = !bIsPlayerTurn;
+	
+	AIMove();
+}
+
+void ATicTacToeGameMode::AIMove()
+{
+	int Row = 0;
+	int Col = 0;
+	
+	if (!IsFullGrid())
+	{
+		while (Grid[Row][Col] != 0) // can use do.while
+		{
+			Row = FMath::RandRange(0, 2);
+			Col = FMath::RandRange(0, 2);
+		}
+		
+		if (Grid[Row][Col] == 0)
+		{
+			Grid[Row][Col] = 2; // 2: represent the AI
+			
+			AMyPlayerPawn* MyPlayerPawn = Cast<AMyPlayerPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+			MyPlayerPawn->MainBoardWidget->OnCellClicked(Row, Col, "O");
+		}
+		
+		if (!bIsPlayerTurn)
+		{
+			bIsPlayerTurn = true;
+		}
+	}
+}
+
+bool ATicTacToeGameMode::IsFullGrid()
+{
+	for (int Row = 0; Row < 3; ++Row)
+	{
+		for (int Col = 0; Col < 3; ++Col)
+		{
+			if (Grid[Row][Col] == 0) return false;
+		}
+	}
+	
+	return true;
 }

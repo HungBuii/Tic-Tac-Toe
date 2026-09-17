@@ -35,5 +35,6 @@ void UMainBoardWidget::OnCellClicked(int Row, int Col, FString Symbol)
 	if (Cells.IsValidIndex(CellIndex))
 	{
 		Cells[CellIndex]->SetSymbolText(Symbol);
+		Cells[CellIndex]->SetIsEnabled(false);
 	}
 }
