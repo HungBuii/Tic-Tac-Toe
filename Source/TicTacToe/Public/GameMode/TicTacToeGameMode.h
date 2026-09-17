@@ -34,6 +34,10 @@ public:
 	void SwitchTurn();
 	
 	/** AI Turn */
+private: 
+	FTimerHandle AITurnWaitTimer;
+		
+public:
 	void AIMove();
 	
 private:

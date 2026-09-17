@@ -36,7 +36,10 @@ void ATicTacToeGameMode::SwitchTurn()
 {
 	bIsPlayerTurn = !bIsPlayerTurn;
 	
-	AIMove();
+	bool IsTimerAlreadyActive = GetWorldTimerManager().IsTimerActive(AITurnWaitTimer);
+	if (IsTimerAlreadyActive) GetWorldTimerManager().ClearTimer(AITurnWaitTimer);
+	GetWorldTimerManager().SetTimer(AITurnWaitTimer, this, &ATicTacToeGameMode::AIMove, 
+		1.f, false, 1.f);
 }
 
 void ATicTacToeGameMode::AIMove()
