@@ -5,6 +5,7 @@
 
 #include "Board/CellBoardWidget.h"
 #include "Components/GridPanel.h"
+#include "Components/TextBlock.h"
 
 void UMainBoardWidget::GenerateBoard()
 {
@@ -37,4 +38,10 @@ void UMainBoardWidget::OnCellClicked(int Row, int Col, FString Symbol)
 		Cells[CellIndex]->SetSymbolText(Symbol);
 		Cells[CellIndex]->SetIsEnabled(false);
 	}
+}
+
+void UMainBoardWidget::ChangeTurnText(FString NewTurnText)
+{
+	FString Str = FString::Printf(TEXT("%s"), *NewTurnText);
+	TurnText->SetText(FText::FromString(Str));
 }

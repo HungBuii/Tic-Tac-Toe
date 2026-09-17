@@ -24,6 +24,9 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	
+public:
+	virtual void Tick(float DeltaSeconds) override;
+	
 private:
 	/** Player Turn */
 	bool bIsPlayerTurn = true;

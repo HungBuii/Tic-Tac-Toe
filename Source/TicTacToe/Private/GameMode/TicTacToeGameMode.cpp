@@ -9,11 +9,24 @@
 
 ATicTacToeGameMode::ATicTacToeGameMode()
 {
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 void ATicTacToeGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void ATicTacToeGameMode::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	
+	AMyPlayerPawn* MyPlayerPawn = Cast<AMyPlayerPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	if (bIsPlayerTurn)
+	{
+		MyPlayerPawn->MainBoardWidget->ChangeTurnText("Player Turn");
+	}
+	else MyPlayerPawn->MainBoardWidget->ChangeTurnText("AI Turn");
 }
 
 void ATicTacToeGameMode::PlayerMove(int Row, int Col)

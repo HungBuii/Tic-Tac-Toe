@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MainBoardWidget.generated.h"
 
+class UTextBlock;
 class UCellBoardWidget;
 class UGridPanel;
 /**
@@ -34,5 +35,13 @@ private:
 	
 public:
 	void OnCellClicked(int Row, int Col, FString Symbol);
+	
+private:
+	/** Turn text */
+	UPROPERTY(meta=(BindWidget))
+	UTextBlock* TurnText;
+	
+public:
+	void ChangeTurnText(FString NewTurnText);
 	
 };

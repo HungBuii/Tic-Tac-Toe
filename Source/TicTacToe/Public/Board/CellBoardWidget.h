@@ -40,7 +40,6 @@ private:
 	UFUNCTION()
 	void OnButtonClicked();
 	
-private:
 	/** Symbol Text */
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> Symbol;
