@@ -36,6 +36,9 @@ private:
 public:
 	void OnCellClicked(int Row, int Col, FString Symbol);
 	
+	/** Disable all cells */
+	void DisableAllCells();
+	
 private:
 	/** Turn text */
 	UPROPERTY(meta=(BindWidget))

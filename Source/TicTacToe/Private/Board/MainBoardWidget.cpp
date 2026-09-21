@@ -45,6 +45,14 @@ void UMainBoardWidget::OnCellClicked(int Row, int Col, FString Symbol)
 	}
 }
 
+void UMainBoardWidget::DisableAllCells()
+{
+	for (UCellBoardWidget* Cell : Cells)
+	{
+		Cell->GetButtonClick()->SetIsEnabled(false);
+	}
+}
+
 void UMainBoardWidget::ChangeTurnText(FString NewTurnText)
 {
 	FString Str = FString::Printf(TEXT("%s"), *NewTurnText);

@@ -7,6 +7,10 @@
 #include "GameFramework/GameModeBase.h"
 #include "TicTacToeGameMode.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FHumanWinDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAIWinDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDrawGameDelegate);
+
 /**
  * 
  */
@@ -49,6 +53,21 @@ private:
 	
 public:
 	/** check grid is full? */
-	bool IsFullGrid();
+	bool IsFullGrid() const;
 	
+	/** check win/lose/draw */
+	bool CheckPlayerWin(int Id) const;
+	
+	FHumanWinDelegate HumanWinDelegate;
+	FAIWinDelegate AIWinDelegate;
+	FDrawGameDelegate DrawGameDelegate;
+	
+	UFUNCTION()
+	void HumanWin();
+	
+	UFUNCTION()
+	void AIWin();
+	
+	UFUNCTION()
+	void DrawGame();
 };
