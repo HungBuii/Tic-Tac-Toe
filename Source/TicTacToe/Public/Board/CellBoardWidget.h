@@ -35,6 +35,7 @@ private:
 	
 public:
 	void SetButtonMargin(int Row, int Col);
+	UButton* GetButtonClick();
 	
 private:
 	UFUNCTION()
@@ -46,4 +47,6 @@ private:
 	
 public:
 	void SetSymbolText(FString SymbolText);
+	
+	UTextBlock* GetSymbolText();
 };

@@ -63,6 +63,11 @@ void UCellBoardWidget::SetButtonMargin(int Row, int Col)
 	}
 }
 
+UButton* UCellBoardWidget::GetButtonClick()
+{
+	return ButtonClick;
+}
+
 void UCellBoardWidget::OnButtonClicked()
 {
 	AGameModeBase* GameMode = GetWorld()->GetAuthGameMode();
@@ -83,4 +88,9 @@ void UCellBoardWidget::SetSymbolText(FString SymbolText)
 	{
 		Symbol->SetText(FText::FromString(SymbolText));
 	}
+}
+
+UTextBlock* UCellBoardWidget::GetSymbolText()
+{
+	return Symbol;
 }

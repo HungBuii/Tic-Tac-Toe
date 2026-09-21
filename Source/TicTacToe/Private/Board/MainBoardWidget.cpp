@@ -4,6 +4,7 @@
 #include "Board/MainBoardWidget.h"
 
 #include "Board/CellBoardWidget.h"
+#include "Components/Button.h"
 #include "Components/GridPanel.h"
 #include "Components/TextBlock.h"
 
@@ -35,8 +36,12 @@ void UMainBoardWidget::OnCellClicked(int Row, int Col, FString Symbol)
 
 	if (Cells.IsValidIndex(CellIndex))
 	{
+		Cells[CellIndex]->GetButtonClick()->SetIsEnabled(false);
 		Cells[CellIndex]->SetSymbolText(Symbol);
-		Cells[CellIndex]->SetIsEnabled(false);
+		
+		// Cells[CellIndex]->SetIsEnabled(false);
+		// Cells[CellIndex]->SetSymbolText(Symbol);
+		
 	}
 }
 
