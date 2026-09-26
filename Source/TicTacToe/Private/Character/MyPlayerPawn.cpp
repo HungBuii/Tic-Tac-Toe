@@ -5,6 +5,7 @@
 
 #include "Blueprint/UserWidget.h"
 #include "Board/MainBoardWidget.h"
+#include "Board/MenuWidget.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -20,13 +21,23 @@ void AMyPlayerPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	if (MainBoardHUDClass)	
+	// if (MainBoardHUDClass)	
+	// {
+	// 	MainBoardWidget = CreateWidget<UMainBoardWidget>(UGameplayStatics::GetPlayerController(GetWorld(), 
+	// 		0), MainBoardHUDClass);
+	// 	if (MainBoardWidget)
+	// 	{
+	// 		MainBoardWidget->AddToPlayerScreen();
+	// 	}
+	// }
+	
+	if (MenuWidgetClass)	
 	{
-		MainBoardWidget = CreateWidget<UMainBoardWidget>(UGameplayStatics::GetPlayerController(GetWorld(), 
-			0), MainBoardHUDClass);
-		if (MainBoardWidget)
+		MenuWidget = CreateWidget<UMenuWidget>(UGameplayStatics::GetPlayerController(GetWorld(), 
+			0), MenuWidgetClass);
+		if (MenuWidget)
 		{
-			MainBoardWidget->AddToPlayerScreen();
+			MenuWidget->AddToPlayerScreen();
 		}
 	}
 }

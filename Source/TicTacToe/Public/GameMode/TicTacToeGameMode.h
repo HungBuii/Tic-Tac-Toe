@@ -7,7 +7,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "TicTacToeGameMode.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FHumanWinDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayer1WinDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAIWinDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDrawGameDelegate);
 
@@ -33,23 +33,31 @@ public:
 	
 private:
 	/** Player Turn */
-	bool bIsPlayerTurn = true;
+	UPROPERTY(EditAnywhere, Category="Select Turn Play", meta = (AllowPrivateAccess = "true"))
+	bool bIsPlayer1Turn = false;
 	
-public:
-	void PlayerMove(int Row, int Col);
-	
-	void SwitchTurn();
+	int RowPlayer1Turn = 0;
+	int ColPlayer1Turn = 0;
 	
 	/** AI Turn */
-private: 
-	FTimerHandle AITurnWaitTimer;
-		
-public:
-	void AIMove();
+	UPROPERTY(EditAnywhere, Category="Select Turn Play", meta = (AllowPrivateAccess = "true"))
+	bool bIsAITurn = false;
 	
-private:
+	FTimerHandle AITurnWaitTimer;
+	
 	/** definition board 3x3 */
 	int Grid[3][3];
+	
+public:
+	/** Player Turn */
+	void PlayerMove();
+	
+	void ButtonClicked(int Row, int Col);
+	
+	/** AI Turn */
+	void AIMove();
+	
+	void SwitchTurn();
 	
 public:
 	/** check grid is full? */
@@ -58,7 +66,7 @@ public:
 	/** check win/lose/draw */
 	bool CheckPlayerWin(int Id) const;
 	
-	FHumanWinDelegate HumanWinDelegate;
+	FPlayer1WinDelegate Player1WinDelegate;
 	FAIWinDelegate AIWinDelegate;
 	FDrawGameDelegate DrawGameDelegate;
 	

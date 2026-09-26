@@ -16,7 +16,7 @@ void ATicTacToeGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	HumanWinDelegate.AddDynamic(this, &ATicTacToeGameMode::HumanWin);
+	Player1WinDelegate.AddDynamic(this, &ATicTacToeGameMode::HumanWin);
 	AIWinDelegate.AddDynamic(this, &ATicTacToeGameMode::AIWin);
 	DrawGameDelegate.AddDynamic(this, &ATicTacToeGameMode::DrawGame);
 }
@@ -25,67 +25,95 @@ void ATicTacToeGameMode::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	
-	AMyPlayerPawn* MyPlayerPawn = Cast<AMyPlayerPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-	
-	if (CheckPlayerWin(1))
-	{
-		bIsPlayerTurn = false;
-		MyPlayerPawn->MainBoardWidget->DisableAllCells();
-		HumanWinDelegate.Broadcast();
-		// MyPlayerPawn->MainBoardWidget->ChangeTurnText("Player Won!");
-	}
-	else if (CheckPlayerWin(2))
-	{
-		bIsPlayerTurn = false;
-		MyPlayerPawn->MainBoardWidget->DisableAllCells();
-		AIWinDelegate.Broadcast();
-	}
-	else
-	{
-		if (IsFullGrid())
-		{
-			DrawGameDelegate.Broadcast();
-		}
-		else
-		{
-			if (bIsPlayerTurn)
-			{
-				MyPlayerPawn->MainBoardWidget->ChangeTurnText("Player Turn");
-			}
-			else MyPlayerPawn->MainBoardWidget->ChangeTurnText("AI Turn");
-		}
-	}
+	// AMyPlayerPawn* MyPlayerPawn = Cast<AMyPlayerPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	//
+	// if (CheckPlayerWin(1))
+	// {
+	// 	bIsPlayer1Turn = false;
+	// 	MyPlayerPawn->MainBoardWidget->DisableAllCells();
+	// 	Player1WinDelegate.Broadcast();
+	// 	// MyPlayerPawn->MainBoardWidget->ChangeTurnText("Player Won!");
+	// }
+	// else if (CheckPlayerWin(2))
+	// {
+	// 	bIsPlayer1Turn = false;
+	// 	MyPlayerPawn->MainBoardWidget->DisableAllCells();
+	// 	AIWinDelegate.Broadcast();
+	// }
+	// else
+	// {
+	// 	if (IsFullGrid())
+	// 	{
+	// 		DrawGameDelegate.Broadcast();
+	// 	}
+	// 	else
+	// 	{
+	// 		if (bIsPlayer1Turn)
+	// 		{
+	// 			MyPlayerPawn->MainBoardWidget->ChangeTurnText("Player Turn");
+	// 		}
+	// 		else MyPlayerPawn->MainBoardWidget->ChangeTurnText("AI Turn");
+	// 	}
+	// }
 	
 }
 
-void ATicTacToeGameMode::PlayerMove(int Row, int Col)
+void ATicTacToeGameMode::PlayerMove()
 {
-	if (bIsPlayerTurn && !IsFullGrid())
+	if (bIsPlayer1Turn && !bIsAITurn && !IsFullGrid())
 	{
-		if (Grid[Row][Col] == 0) // its empty 
+		if (Grid[RowPlayer1Turn][ColPlayer1Turn] == 0) // its empty 
 		{
-			Grid[Row][Col] = 1; // 1: represent the Player
+			Grid[RowPlayer1Turn][ColPlayer1Turn] = 1; // 1: represent the Player
 			
 			AMyPlayerPawn* MyPlayerPawn = Cast<AMyPlayerPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-			MyPlayerPawn->MainBoardWidget->OnCellClicked(Row, Col, "X");
+			MyPlayerPawn->MainBoardWidget->OnCellClicked(RowPlayer1Turn, ColPlayer1Turn, "X");
 		}
 		
+		bIsPlayer1Turn = false;
+		bIsAITurn = true;
 		SwitchTurn();
 	}
 }
 
+void ATicTacToeGameMode::ButtonClicked(int Row, int Col)
+{
+	RowPlayer1Turn = Row;
+	ColPlayer1Turn = Col;
+}
+
 void ATicTacToeGameMode::SwitchTurn()
 {
-	bIsPlayerTurn = false;
+	// if (!CheckPlayerWin(1) || !CheckPlayerWin(2))
+	// {
+	// 	if (bIsPlayer1Turn && !bIsAITurn)
+	// 	{
+	// 		PlayerMove();
+	// 	}
+	// 	if (!bIsPlayer1Turn && bIsAITurn)
+	// 	{
+	// 		bool IsTimerAlreadyActive = GetWorldTimerManager().IsTimerActive(AITurnWaitTimer);
+	// 		if (IsTimerAlreadyActive) GetWorldTimerManager().ClearTimer(AITurnWaitTimer);
+	// 		GetWorldTimerManager().SetTimer(AITurnWaitTimer, this, &ATicTacToeGameMode::AIMove, 
+	// 			1.f, false, 1.f);
+	// 	}
+	// }
 	
-	if (!CheckPlayerWin(1))
+	if (bIsPlayer1Turn && !bIsAITurn)
 	{
-		bool IsTimerAlreadyActive = GetWorldTimerManager().IsTimerActive(AITurnWaitTimer);
-		if (IsTimerAlreadyActive) GetWorldTimerManager().ClearTimer(AITurnWaitTimer);
-		GetWorldTimerManager().SetTimer(AITurnWaitTimer, this, &ATicTacToeGameMode::AIMove, 
-			1.f, false, 1.f);
+		if (!CheckPlayerWin(1) || !CheckPlayerWin(2)) PlayerMove();
 	}
 	
+	if (!bIsPlayer1Turn && bIsAITurn)
+	{
+		if (!CheckPlayerWin(1) || !CheckPlayerWin(2))
+		{
+			bool IsTimerAlreadyActive = GetWorldTimerManager().IsTimerActive(AITurnWaitTimer);
+			if (IsTimerAlreadyActive) GetWorldTimerManager().ClearTimer(AITurnWaitTimer);
+			GetWorldTimerManager().SetTimer(AITurnWaitTimer, this, &ATicTacToeGameMode::AIMove, 
+				1.f, false, 1.f);
+		}
+	}
 }
 
 void ATicTacToeGameMode::AIMove()
@@ -93,7 +121,7 @@ void ATicTacToeGameMode::AIMove()
 	int Row = 0;
 	int Col = 0;
 	
-	if (!IsFullGrid())
+	if (!bIsPlayer1Turn && bIsAITurn && !IsFullGrid())
 	{
 		while (Grid[Row][Col] != 0) // can use do.while
 		{
@@ -109,10 +137,9 @@ void ATicTacToeGameMode::AIMove()
 			MyPlayerPawn->MainBoardWidget->OnCellClicked(Row, Col, "O");
 		}
 		
-		if (!bIsPlayerTurn)
-		{
-			bIsPlayerTurn = true;
-		}
+		bIsPlayer1Turn = true;
+		bIsAITurn = false;
+		SwitchTurn();
 	}
 }
 

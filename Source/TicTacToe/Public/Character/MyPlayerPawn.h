@@ -6,6 +6,7 @@
 #include "GameFramework/Pawn.h"
 #include "MyPlayerPawn.generated.h"
 
+class UMenuWidget;
 class UMainBoardWidget;
 
 UCLASS()
@@ -28,13 +29,23 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
+	/** Main Board */
+	UPROPERTY(VisibleAnywhere, Category = "HUD", meta=(AllowPrivateAccess=true))
+	TObjectPtr<UMainBoardWidget> MainBoardWidget;
+	
+	/** Menu */
+	UPROPERTY(VisibleAnywhere, Category = "HUD", meta=(AllowPrivateAccess=true))
+	TObjectPtr<UMenuWidget> MenuWidget;
+	
 private:
 	/** Main Board */
 	UPROPERTY(EditDefaultsOnly, Category = "HUD", meta=(AllowPrivateAccess=true))
 	TSubclassOf<UMainBoardWidget> MainBoardHUDClass;
 	
-public:
-	UPROPERTY(VisibleAnywhere, Category = "HUD", meta=(AllowPrivateAccess=true))
-	TObjectPtr<UMainBoardWidget> MainBoardWidget;
+	/** Menu */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD", meta=(AllowPrivateAccess=true))
+	TSubclassOf<UMenuWidget> MenuWidgetClass;
+	
+
 
 };
