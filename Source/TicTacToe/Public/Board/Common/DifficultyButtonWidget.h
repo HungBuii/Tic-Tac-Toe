@@ -16,9 +16,16 @@ class TICTACTOE_API UDifficultyButtonWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
+protected:
+	virtual void NativeConstruct() override;
+	
 public:
 	/** Set Text */
 	void SetDifficultyText(FString NewDifficultyText);
+	
+private:
+	UFUNCTION()
+	void OnButtonClicked();
 	
 private:
 	/** Button */

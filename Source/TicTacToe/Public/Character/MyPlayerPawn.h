@@ -29,13 +29,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
-	/** Main Board */
-	UPROPERTY(VisibleAnywhere, Category = "HUD", meta=(AllowPrivateAccess=true))
-	TObjectPtr<UMainBoardWidget> MainBoardWidget;
-	
-	/** Menu */
-	UPROPERTY(VisibleAnywhere, Category = "HUD", meta=(AllowPrivateAccess=true))
-	TObjectPtr<UMenuWidget> MenuWidget;
+	/** Create Widget "MainBoardWidget" */
+	void CreateMainBoardWidget();
 	
 private:
 	/** Main Board */
@@ -45,6 +40,15 @@ private:
 	/** Menu */
 	UPROPERTY(EditDefaultsOnly, Category = "HUD", meta=(AllowPrivateAccess=true))
 	TSubclassOf<UMenuWidget> MenuWidgetClass;
+	
+public:
+	/** Main Board */
+	UPROPERTY(VisibleAnywhere, Category = "HUD", meta=(AllowPrivateAccess=true))
+	TObjectPtr<UMainBoardWidget> MainBoardWidget;
+	
+	/** Menu */
+	UPROPERTY(VisibleAnywhere, Category = "HUD", meta=(AllowPrivateAccess=true))
+	TObjectPtr<UMenuWidget> MenuWidget;
 	
 
 

@@ -21,16 +21,6 @@ void AMyPlayerPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	// if (MainBoardHUDClass)	
-	// {
-	// 	MainBoardWidget = CreateWidget<UMainBoardWidget>(UGameplayStatics::GetPlayerController(GetWorld(), 
-	// 		0), MainBoardHUDClass);
-	// 	if (MainBoardWidget)
-	// 	{
-	// 		MainBoardWidget->AddToPlayerScreen();
-	// 	}
-	// }
-	
 	if (MenuWidgetClass)	
 	{
 		MenuWidget = CreateWidget<UMenuWidget>(UGameplayStatics::GetPlayerController(GetWorld(), 
@@ -54,5 +44,18 @@ void AMyPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void AMyPlayerPawn::CreateMainBoardWidget()
+{
+	if (MainBoardHUDClass)	
+	{
+		MainBoardWidget = CreateWidget<UMainBoardWidget>(UGameplayStatics::GetPlayerController(GetWorld(), 
+			0), MainBoardHUDClass);
+		if (MainBoardWidget)
+		{
+			MainBoardWidget->AddToPlayerScreen();
+		}
+	}
 }
 

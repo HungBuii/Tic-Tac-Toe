@@ -77,7 +77,7 @@ void UCellBoardWidget::OnButtonClicked()
 		
 		if (GameModeInterface)
 		{
-			GameModeInterface->GetTicTacToeGameMode()->PlayerMove(CellRow, CellColumn);
+			GameModeInterface->GetTicTacToeGameMode()->ButtonClicked(CellRow, CellColumn);
 		}
 	}
 }

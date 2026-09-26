@@ -3,12 +3,39 @@
 
 #include "Board/Common/DifficultyButtonWidget.h"
 
+#include "Character/MyPlayerPawn.h"
+#include "Components/Button.h"
 #include "Components/TextBlock.h"
+#include "Kismet/GameplayStatics.h"
+
+void UDifficultyButtonWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+	
+	if (DifficultyButton)
+	{
+		DifficultyButton->OnClicked.AddDynamic(this, &UDifficultyButtonWidget::OnButtonClicked);
+	}
+}
 
 void UDifficultyButtonWidget::SetDifficultyText(FString NewDifficultyText)
 {
 	if (DifficultyText)
 	{
 		DifficultyText->SetText(FText::FromString(NewDifficultyText));
+	}
+}
+
+void UDifficultyButtonWidget::OnButtonClicked()
+{
+	if (DifficultyText->GetText().EqualTo(FText::FromString("Easy")))
+	{
+		AMyPlayerPawn* PlayerPawn = Cast<AMyPlayerPawn>(UGameplayStatics::GetPlayerPawn
+				(GetWorld(), 0));
+		if (PlayerPawn)
+		{
+			// Create MainBoardWidget
+			PlayerPawn->CreateMainBoardWidget();
+		}
 	}
 }
