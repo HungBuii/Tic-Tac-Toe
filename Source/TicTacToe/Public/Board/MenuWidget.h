@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MenuWidget.generated.h"
 
+class UCheckBox;
 class UDifficultyButtonWidget;
 class UUniformGridPanel;
 /**
@@ -20,6 +21,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void GenerateDifficultyButton();
 	
+	bool CanPlayerGoFirst() const;
+	
 private:
 	/** Select Difficulty Button Grid */
 	UPROPERTY(meta=(BindWidget))
@@ -30,4 +33,7 @@ private:
 	TSubclassOf<UDifficultyButtonWidget> DifficultyButtonWidgetClass;
 
 	TArray<FString> DifficultyTextArray = {TEXT("Easy"), TEXT("Medium"), TEXT("Hard")};
+	
+	UPROPERTY(meta=(BindWidget))
+	UCheckBox* CB_GoFirst;
 };

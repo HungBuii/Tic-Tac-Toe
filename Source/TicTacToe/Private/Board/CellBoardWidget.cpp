@@ -4,6 +4,7 @@
 #include "Board/CellBoardWidget.h"
 
 #include "IPropertyTable.h"
+#include "Character/MyPlayerPawn.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "GameFramework/GameModeBase.h"
@@ -70,15 +71,9 @@ UButton* UCellBoardWidget::GetButtonClick()
 
 void UCellBoardWidget::OnButtonClicked()
 {
-	AGameModeBase* GameMode = GetWorld()->GetAuthGameMode();
-	if (GameMode && GameMode->GetClass()->ImplementsInterface(UGameModeInterface::StaticClass()))
+	if (AMyPlayerPawn* MyPlayerPawn = Cast<AMyPlayerPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
 	{
-		IGameModeInterface* GameModeInterface = Cast<IGameModeInterface>(GameMode);
-		
-		if (GameModeInterface)
-		{
-			GameModeInterface->GetTicTacToeGameMode()->ButtonClicked(CellRow, CellColumn);
-		}
+		MyPlayerPawn->PlayerMove(CellRow, CellColumn);
 	}
 }
 

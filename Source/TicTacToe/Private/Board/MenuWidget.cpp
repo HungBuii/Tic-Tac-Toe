@@ -4,6 +4,7 @@
 #include "Board/MenuWidget.h"
 
 #include "Board/Common/DifficultyButtonWidget.h"
+#include "Components/CheckBox.h"
 #include "Components/UniformGridPanel.h"
 
 void UMenuWidget::GenerateDifficultyButton()
@@ -23,4 +24,13 @@ void UMenuWidget::GenerateDifficultyButton()
 			SelectDifficultyButtonGrid->AddChildToUniformGrid(NewDifficultyButton,0, i);
 		}
 	}
+}
+
+bool UMenuWidget::CanPlayerGoFirst() const
+{
+	if (CB_GoFirst->IsChecked())
+	{
+		return true;
+	}
+	return false;
 }

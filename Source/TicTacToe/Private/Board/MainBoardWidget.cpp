@@ -18,7 +18,7 @@ void UMainBoardWidget::GenerateBoard()
 			NewCell->SetCellRow(Row);
 			NewCell->SetCellColumn(Col);
 			NewCell->SetButtonMargin(Row, Col);
-			NewCell->SetSymbolText("");
+			NewCell->SetSymbolText("!");
 			
 			if (GridPanel)
 			{
@@ -38,10 +38,6 @@ void UMainBoardWidget::OnCellClicked(int Row, int Col, FString Symbol)
 	{
 		Cells[CellIndex]->GetButtonClick()->SetIsEnabled(false);
 		Cells[CellIndex]->SetSymbolText(Symbol);
-		
-		// Cells[CellIndex]->SetIsEnabled(false);
-		// Cells[CellIndex]->SetSymbolText(Symbol);
-		
 	}
 }
 
