@@ -78,7 +78,7 @@ public:
 	void DrawGame();
 	
 	/** status game when check win/lose/draw */
-	void StatusGameUpdate();
+	bool StatusGameUpdate(int Id);
 	
 private:
 	/** Main Board */
@@ -93,9 +93,6 @@ private:
 	/** Player Turn */
 	UPROPERTY(EditAnywhere, Category="Select Turn Play", meta = (AllowPrivateAccess = "true"))
 	bool bIsPlayerTurn = false;
-	
-	int RowPlayer1Turn = 0;
-	int ColPlayer1Turn = 0;
 	
 	/** AI Turn */
 	

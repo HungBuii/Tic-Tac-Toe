@@ -18,11 +18,25 @@ class TICTACTOE_API UMainBoardWidget : public UUserWidget
 	GENERATED_BODY()
 	
 private:
+	/** Number of Rows */
+	UPROPERTY(EditDefaultsOnly, Category="Setting Board", meta=(AllowPrivateAccess=true))
+	int Row = 3;
+	
+	/** Number of Columns */
+	UPROPERTY(EditDefaultsOnly, Category="Setting Board", meta=(AllowPrivateAccess=true))
+	int Col = 3;
+	
 	/** Grid */
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UGridPanel> GridPanel;
 	
 public:
+	/** Get Number of Rows */
+	int GetRow();
+	
+	/** Get Number of Columns */
+	int GetCol();
+	
 	UFUNCTION(BlueprintCallable)
 	void GenerateBoard();
 	

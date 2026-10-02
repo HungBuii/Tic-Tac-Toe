@@ -39,8 +39,7 @@ void AMyPlayerPawn::BeginPlay()
 void AMyPlayerPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	StatusGameUpdate();
+	
 }
 
 // Called to bind functionality to input
@@ -84,6 +83,9 @@ void AMyPlayerPawn::PlayerMove(int Row, int Col)
 			Grid[Row][Col] = 1; // 1: represent the Player
 
 			MainBoardWidget->OnCellClicked(Row, Col, "X");
+			
+			if (StatusGameUpdate(1)) return;
+			
 			MainBoardWidget->ChangeTurnText("AI Turn");
 
 			bIsPlayerTurn = false;
@@ -96,19 +98,21 @@ void AMyPlayerPawn::AIMove()
 {
 	if (!bIsPlayerTurn && !IsFullGrid() && !bIsGameOver)
 	{
-		int Row = FMath::RandRange(0, 2);;
-		int Col = FMath::RandRange(0, 2);
+		int Row = FMath::RandRange(0, MainBoardWidget->GetRow() - 1);
+		int Col = FMath::RandRange(0, MainBoardWidget->GetRow() - 1);
 		while (Grid[Row][Col] != 0) // can use do.while
 		{
-			Row = FMath::RandRange(0, 2);
-			Col = FMath::RandRange(0, 2);
+			Row = FMath::RandRange(0, MainBoardWidget->GetRow() - 1);
+			Col = FMath::RandRange(0, MainBoardWidget->GetRow() - 1);
 		}
 		if (Grid[Row][Col] == 0)
 		{
 			Grid[Row][Col] = 2; // 2: represent the AI
 
 			MainBoardWidget->OnCellClicked(Row, Col, "O");
-
+			
+			if (StatusGameUpdate(2)) return;
+			
 			MainBoardWidget->ChangeTurnText("Human Turn");
 			bIsPlayerTurn = true;
 		}
@@ -125,9 +129,9 @@ void AMyPlayerPawn::SwitchAITurn()
 
 bool AMyPlayerPawn::IsFullGrid() const
 {
-	for (int Row = 0; Row < 3; ++Row)
+	for (int Row = 0; Row < MainBoardWidget->GetRow(); Row++)
 	{
-		for (int Col = 0; Col < 3; ++Col)
+		for (int Col = 0; Col < MainBoardWidget->GetCol(); Col++)
 		{
 			if (Grid[Row][Col] == 0) return false;
 		}
@@ -139,10 +143,10 @@ bool AMyPlayerPawn::IsFullGrid() const
 bool AMyPlayerPawn::CheckPlayerWin(int Id)
 {
 	// check row
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < MainBoardWidget->GetRow(); i++)
 	{
 		Cells.Empty();
-		for (int j = 0; j <= 3 - 3; j++)
+		for (int j = 0; j <= MainBoardWidget->GetCol() - 3; j++)
 		{
 			if (Grid[i][j] == Id && Grid[i][j + 1] == Id && Grid[i][j + 2] == Id)
 			{
@@ -155,10 +159,10 @@ bool AMyPlayerPawn::CheckPlayerWin(int Id)
 	}
 
 	// check column
-	for (int i = 0; i <= 3 - 3; i++)
+	for (int i = 0; i <= MainBoardWidget->GetRow() - 3; i++)
 	{
 		Cells.Empty();
-		for (int j = 0; j < 3; j++)
+		for (int j = 0; j < MainBoardWidget->GetCol(); j++)
 		{
 			if (Grid[i][j] == Id && Grid[i + 1][j] == Id && Grid[i + 2][j] == Id)
 			{
@@ -171,10 +175,10 @@ bool AMyPlayerPawn::CheckPlayerWin(int Id)
 	}
 
 	// check "\"
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < MainBoardWidget->GetRow(); i++)
 	{
 		Cells.Empty();
-		for (int j = 0; j <= 3 - 3; j++)
+		for (int j = 0; j <= MainBoardWidget->GetCol() - 3; j++)
 		{
 			if (Grid[i][j] == Id && Grid[i + 1][j + 1] == Id && Grid[i + 2][j + 2] == Id)
 			{
@@ -187,10 +191,10 @@ bool AMyPlayerPawn::CheckPlayerWin(int Id)
 	}
 
 	// check "/"
-	for (int i = 0; i <= 3 - 3; i++)
+	for (int i = 0; i <= MainBoardWidget->GetRow() - 3; i++)
 	{
 		Cells.Empty();
-		for (int j = 2; j < 3; j++)
+		for (int j = 2; j < MainBoardWidget->GetCol(); j++)
 		{
 			if (Grid[i][j] == Id && Grid[i + 1][j - 1] == Id && Grid[i + 2][j - 2] == Id)
 			{
@@ -220,9 +224,9 @@ void AMyPlayerPawn::DrawGame()
 	MainBoardWidget->ChangeTurnText("Draw!");
 }
 
-void AMyPlayerPawn::StatusGameUpdate()
+bool AMyPlayerPawn::StatusGameUpdate(int Id)
 {
-	if (CheckPlayerWin(1))
+	if (CheckPlayerWin(Id) && Id == 1)
 	{
 		bIsGameOver = true;
 		MainBoardWidget->DisableAllCells();
@@ -230,10 +234,11 @@ void AMyPlayerPawn::StatusGameUpdate()
 
 		for (SelectedCell Cell : Cells)
 		{
-			MainBoardWidget->ChangeCellColor(Cell.Row, Cell.Col, 1);
+			MainBoardWidget->ChangeCellColor(Cell.Row, Cell.Col, Id);
 		}
+		return true;
 	}
-	else if (CheckPlayerWin(2))
+	if (CheckPlayerWin(Id) && Id == 2)
 	{
 		bIsGameOver = true;
 		MainBoardWidget->DisableAllCells();
@@ -241,14 +246,14 @@ void AMyPlayerPawn::StatusGameUpdate()
 
 		for (SelectedCell Cell : Cells)
 		{
-			MainBoardWidget->ChangeCellColor(Cell.Row, Cell.Col, 2);
+			MainBoardWidget->ChangeCellColor(Cell.Row, Cell.Col, Id);
 		}
+		return true;
 	}
-	else
+	if (IsFullGrid())
 	{
-		if (IsFullGrid())
-		{
-			DrawGameDelegate.Broadcast();
-		}
+		DrawGameDelegate.Broadcast();
+		return true;
 	}
+	return false;
 }

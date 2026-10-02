@@ -8,21 +8,31 @@
 #include "Components/GridPanel.h"
 #include "Components/TextBlock.h"
 
+int UMainBoardWidget::GetRow()
+{
+	return Row;
+}
+
+int UMainBoardWidget::GetCol()
+{
+	return Col;
+}
+
 void UMainBoardWidget::GenerateBoard()
 {
-	for (int Row = 0; Row < 3; Row++)
+	for (int tpRow = 0; tpRow < Row; tpRow++)
 	{
-		for (int Col = 0; Col < 3; Col++)
+		for (int tpCol = 0; tpCol < Col; tpCol++)
 		{
 			UCellBoardWidget* NewCell = CreateWidget<UCellBoardWidget>(GetWorld(), CellBoardWidgetClass);
-			NewCell->SetCellRow(Row);
-			NewCell->SetCellColumn(Col);
-			NewCell->SetButtonMargin(Row, Col);
+			NewCell->SetCellRow(tpRow);
+			NewCell->SetCellColumn(tpCol);
+			NewCell->SetButtonMargin(tpRow, tpCol);
 			NewCell->SetSymbolText("!");
 			
 			if (GridPanel)
 			{
-				GridPanel->AddChildToGrid(NewCell, Row, Col);
+				GridPanel->AddChildToGrid(NewCell, tpRow, tpCol);
 			}
 			
 			Cells.Add(NewCell);
@@ -30,9 +40,9 @@ void UMainBoardWidget::GenerateBoard()
 	}
 }
 
-void UMainBoardWidget::ChangeCellColor(int Row, int Col, int Id)
+void UMainBoardWidget::ChangeCellColor(int pRow, int pCol, int Id)
 {
-	int CellIndex = Row * 3 + Col;
+	int CellIndex = pRow * 3 + pCol;
 	
 	if (Cells.IsValidIndex(CellIndex))
 	{
@@ -48,9 +58,9 @@ void UMainBoardWidget::ChangeCellColor(int Row, int Col, int Id)
 	}
 }
 
-void UMainBoardWidget::OnCellClicked(int Row, int Col, FString Symbol)
+void UMainBoardWidget::OnCellClicked(int pRow, int pCol, FString Symbol)
 {
-	int CellIndex = Row * 3 + Col;
+	int CellIndex = pRow * 3 + pCol;
 
 	if (Cells.IsValidIndex(CellIndex))
 	{
