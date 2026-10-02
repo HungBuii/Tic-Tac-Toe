@@ -138,48 +138,44 @@ bool AMyPlayerPawn::IsFullGrid() const
 
 bool AMyPlayerPawn::CheckPlayerWin(int Id)
 {
-	for (int i = 0; i < 3; i++) // check row
+	// check row
+	for (int i = 0; i < 3; i++)
 	{
-		int Count = 0;
 		Cells.Empty();
-		for (int j = 0; j < 3; j++)
+		for (int j = 0; j <= 3 - 3; j++)
 		{
-			if (Grid[i][j] == Id)
+			if (Grid[i][j] == Id && Grid[i][j + 1] == Id && Grid[i][j + 2] == Id)
 			{
-				Count++;
 				Cells.Add(SelectedCell(i, j));
+				Cells.Add(SelectedCell(i, j + 1));
+				Cells.Add(SelectedCell(i, j + 2));
+				return true;
 			}
-
-			if (Count == 3) return true;
 		}
 	}
 
-	for (int i = 0; i < 3; i++) // check column
+	// check column
+	for (int i = 0; i <= 3 - 3; i++)
 	{
-		int Count = 0;
 		Cells.Empty();
 		for (int j = 0; j < 3; j++)
 		{
-			if (Grid[j][i] == Id)
+			if (Grid[i][j] == Id && Grid[i + 1][j] == Id && Grid[i + 2][j] == Id)
 			{
-				Count++;
-				Cells.Add(SelectedCell(j, i));
+				Cells.Add(SelectedCell(i, j));
+				Cells.Add(SelectedCell(i + 1, j));
+				Cells.Add(SelectedCell(i + 2, j));
+				return true;
 			}
-
-			if (Count == 3) return true;
 		}
 	}
-
-	// if (Grid[0][0] == Id && Grid[1][1] == Id && Grid[2][2] == Id) return true; // fix 
-	// if (Grid[0][2] == Id && Grid[1][1] == Id && Grid[2][0] == Id) return true; // fix 
 
 	// check "\"
 	for (int i = 0; i < 3; i++)
 	{
 		Cells.Empty();
-		for (int j = 0; j < 3; j++)
+		for (int j = 0; j <= 3 - 3; j++)
 		{
-			if (i + 1 > 2 || i + 2 > 2 || j + 1 > 2 || j + 2 > 2) continue;
 			if (Grid[i][j] == Id && Grid[i + 1][j + 1] == Id && Grid[i + 2][j + 2] == Id)
 			{
 				Cells.Add(SelectedCell(i, j));
@@ -191,12 +187,11 @@ bool AMyPlayerPawn::CheckPlayerWin(int Id)
 	}
 
 	// check "/"
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i <= 3 - 3; i++)
 	{
 		Cells.Empty();
-		for (int j = 3 - 1; j >= 0; j--)
+		for (int j = 2; j < 3; j++)
 		{
-			if (i + 1 > 2 || i + 2 > 2 || j - 1 < 0 || j - 2 < 0) continue;
 			if (Grid[i][j] == Id && Grid[i + 1][j - 1] == Id && Grid[i + 2][j - 2] == Id)
 			{
 				Cells.Add(SelectedCell(i, j));
