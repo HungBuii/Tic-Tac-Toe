@@ -32,7 +32,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="DifficultyButtonWidget Class", meta=(AllowPrivateAccess=true))
 	TSubclassOf<UDifficultyButtonWidget> DifficultyButtonWidgetClass;
 
-	TArray<FString> DifficultyTextArray = {TEXT("Easy"), TEXT("Medium"), TEXT("Hard")};
+	TArray<FString> DifficultyTextArray = {TEXT("Easy"), TEXT("Hard"), TEXT("PvP")};
 	
 	UPROPERTY(meta=(BindWidget))
 	UCheckBox* CB_GoFirst;

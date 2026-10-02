@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Board/CellBoardWidget.h"
+// #include "Board/CellBoardWidget.h"
+#include "Board/Common/CellBoardWidget.h"
 
 #include "IPropertyTable.h"
 #include "Character/MyPlayerPawn.h"

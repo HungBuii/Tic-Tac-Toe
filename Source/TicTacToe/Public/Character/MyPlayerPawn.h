@@ -13,6 +13,12 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerWinDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAIWinDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDrawGameDelegate);
 
+struct SelectedCell
+{
+	int Row;
+	int Col;
+};
+
 UCLASS()
 class TICTACTOE_API AMyPlayerPawn : public APawn
 {
@@ -56,7 +62,7 @@ public:
 	bool IsFullGrid() const;
 	
 	/** check win/lose/draw */
-	bool CheckPlayerWin(int Id) const;
+	bool CheckPlayerWin(int Id);
 	
 	FPlayerWinDelegate PlayerWinDelegate;
 	FAIWinDelegate AIWinDelegate;
@@ -77,7 +83,7 @@ public:
 private:
 	/** Main Board */
 	UPROPERTY(EditDefaultsOnly, Category = "HUD", meta=(AllowPrivateAccess=true))
-	TSubclassOf<UMainBoardWidget> MainBoardHUDClass;
+	TSubclassOf<UMainBoardWidget> MainBoardClass;
 	
 	/** Menu */
 	UPROPERTY(EditDefaultsOnly, Category = "HUD", meta=(AllowPrivateAccess=true))
@@ -100,5 +106,8 @@ private:
 	
 	/** game over? */
 	bool bIsGameOver = false;
+	
+	/** Archive selected cells */
+	TArray<SelectedCell> Cells;
 	
 };

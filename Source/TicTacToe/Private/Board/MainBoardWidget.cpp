@@ -3,7 +3,7 @@
 
 #include "Board/MainBoardWidget.h"
 
-#include "Board/CellBoardWidget.h"
+#include "Board/Common/CellBoardWidget.h"
 #include "Components/Button.h"
 #include "Components/GridPanel.h"
 #include "Components/TextBlock.h"
@@ -27,6 +27,24 @@ void UMainBoardWidget::GenerateBoard()
 			
 			Cells.Add(NewCell);
 		}
+	}
+}
+
+void UMainBoardWidget::ChangeCellColor(int Row, int Col, int Id)
+{
+	int CellIndex = Row * 3 + Col;
+	
+	if (Cells.IsValidIndex(CellIndex))
+	{
+		if (Id == 1)
+		{
+			Cells[CellIndex]->GetSymbolText()->SetColorAndOpacity(FLinearColor::Green);
+		}
+		if (Id == 2)
+		{
+			Cells[CellIndex]->GetSymbolText()->SetColorAndOpacity(FLinearColor::Red);
+		}
+		
 	}
 }
 

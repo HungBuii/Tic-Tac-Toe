@@ -26,6 +26,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void GenerateBoard();
 	
+	/** Change the color of the selected cells */
+	void ChangeCellColor(int Row, int Col, int Id); 
+	
 private:
 	/** Cell */
 	UPROPERTY(EditDefaultsOnly, Category="UI", meta=(AllowPrivateAccess=true))

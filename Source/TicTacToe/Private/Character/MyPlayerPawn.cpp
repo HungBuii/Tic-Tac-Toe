@@ -29,7 +29,7 @@ void AMyPlayerPawn::BeginPlay()
 			MenuWidget->AddToPlayerScreen();
 		}
 	}
-	
+
 	PlayerWinDelegate.AddDynamic(this, &AMyPlayerPawn::HumanWin);
 	AIWinDelegate.AddDynamic(this, &AMyPlayerPawn::AIWin);
 	DrawGameDelegate.AddDynamic(this, &AMyPlayerPawn::DrawGame);
@@ -39,7 +39,7 @@ void AMyPlayerPawn::BeginPlay()
 void AMyPlayerPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+
 	StatusGameUpdate();
 }
 
@@ -51,10 +51,10 @@ void AMyPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 void AMyPlayerPawn::CreateMainBoardWidget()
 {
-	if (MainBoardHUDClass)
+	if (MainBoardClass)
 	{
 		MainBoardWidget = CreateWidget<UMainBoardWidget>(UGameplayStatics::GetPlayerController(GetWorld(),
-			                                                 0), MainBoardHUDClass);
+			                                                 0), MainBoardClass);
 		if (MainBoardWidget)
 		{
 			MainBoardWidget->AddToPlayerScreen();
@@ -62,7 +62,7 @@ void AMyPlayerPawn::CreateMainBoardWidget()
 			bIsGameOver = false;
 		}
 	}
-	
+
 	if (!bIsPlayerTurn)
 	{
 		SwitchAITurn();
@@ -85,12 +85,11 @@ void AMyPlayerPawn::PlayerMove(int Row, int Col)
 
 			MainBoardWidget->OnCellClicked(Row, Col, "X");
 			MainBoardWidget->ChangeTurnText("AI Turn");
-			
+
 			bIsPlayerTurn = false;
 			SwitchAITurn();
 		}
 	}
-	
 }
 
 void AMyPlayerPawn::AIMove()
@@ -107,14 +106,13 @@ void AMyPlayerPawn::AIMove()
 		if (Grid[Row][Col] == 0)
 		{
 			Grid[Row][Col] = 2; // 2: represent the AI
-	
+
 			MainBoardWidget->OnCellClicked(Row, Col, "O");
-			
+
 			MainBoardWidget->ChangeTurnText("Human Turn");
 			bIsPlayerTurn = true;
 		}
 	}
-	
 }
 
 void AMyPlayerPawn::SwitchAITurn()
@@ -138,14 +136,19 @@ bool AMyPlayerPawn::IsFullGrid() const
 	return true;
 }
 
-bool AMyPlayerPawn::CheckPlayerWin(int Id) const
+bool AMyPlayerPawn::CheckPlayerWin(int Id)
 {
 	for (int i = 0; i < 3; i++) // check row
 	{
 		int Count = 0;
+		Cells.Empty();
 		for (int j = 0; j < 3; j++)
 		{
-			if (Grid[i][j] == Id) Count++;
+			if (Grid[i][j] == Id)
+			{
+				Count++;
+				Cells.Add(SelectedCell(i, j));
+			}
 
 			if (Count == 3) return true;
 		}
@@ -154,16 +157,55 @@ bool AMyPlayerPawn::CheckPlayerWin(int Id) const
 	for (int i = 0; i < 3; i++) // check column
 	{
 		int Count = 0;
+		Cells.Empty();
 		for (int j = 0; j < 3; j++)
 		{
-			if (Grid[j][i] == Id) Count++;
+			if (Grid[j][i] == Id)
+			{
+				Count++;
+				Cells.Add(SelectedCell(j, i));
+			}
 
 			if (Count == 3) return true;
 		}
 	}
 
-	if (Grid[0][0] == Id && Grid[1][1] == Id && Grid[2][2] == Id) return true;
-	if (Grid[0][2] == Id && Grid[1][1] == Id && Grid[2][0] == Id) return true;
+	// if (Grid[0][0] == Id && Grid[1][1] == Id && Grid[2][2] == Id) return true; // fix 
+	// if (Grid[0][2] == Id && Grid[1][1] == Id && Grid[2][0] == Id) return true; // fix 
+
+	// left -> right
+	for (int i = 0; i < 3; i++)
+	{
+		Cells.Empty();
+		for (int j = 0; j < 3; j++)
+		{
+			if (i + 1 > 2 || i + 2 > 2 || j + 1 > 2 || j + 2 > 2) continue;
+			if (Grid[i][j] == Id && Grid[i + 1][j + 1] == Id && Grid[i + 2][j + 2] == Id)
+			{
+				Cells.Add(SelectedCell(i, j));
+				Cells.Add(SelectedCell(i + 1, j + 1));
+				Cells.Add(SelectedCell(i + 2, j + 2));
+				return true;
+			}
+		}
+	}
+
+	// right -> left
+	for (int i = 0; i < 3; i++)
+	{
+		Cells.Empty();
+		for (int j = 3 - 1; j >= 0; j--)
+		{
+			if (i + 1 > 2 || i + 2 > 2 || j - 1 < 0 || j - 2 < 0) continue;
+			if (Grid[i][j] == Id && Grid[i + 1][j - 1] == Id && Grid[i + 2][j - 2] == Id)
+			{
+				Cells.Add(SelectedCell(i, j));
+				Cells.Add(SelectedCell(i + 1, j - 1));
+				Cells.Add(SelectedCell(i + 2, j - 2));
+				return true;
+			}
+		}
+	}
 
 	return false;
 }
@@ -190,12 +232,22 @@ void AMyPlayerPawn::StatusGameUpdate()
 		bIsGameOver = true;
 		MainBoardWidget->DisableAllCells();
 		PlayerWinDelegate.Broadcast();
+
+		for (SelectedCell Cell : Cells)
+		{
+			MainBoardWidget->ChangeCellColor(Cell.Row, Cell.Col, 1);
+		}
 	}
 	else if (CheckPlayerWin(2))
 	{
 		bIsGameOver = true;
 		MainBoardWidget->DisableAllCells();
 		AIWinDelegate.Broadcast();
+
+		for (SelectedCell Cell : Cells)
+		{
+			MainBoardWidget->ChangeCellColor(Cell.Row, Cell.Col, 2);
+		}
 	}
 	else
 	{
