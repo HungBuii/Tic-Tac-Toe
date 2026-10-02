@@ -173,7 +173,7 @@ bool AMyPlayerPawn::CheckPlayerWin(int Id)
 	// if (Grid[0][0] == Id && Grid[1][1] == Id && Grid[2][2] == Id) return true; // fix 
 	// if (Grid[0][2] == Id && Grid[1][1] == Id && Grid[2][0] == Id) return true; // fix 
 
-	// left -> right
+	// check "\"
 	for (int i = 0; i < 3; i++)
 	{
 		Cells.Empty();
@@ -190,7 +190,7 @@ bool AMyPlayerPawn::CheckPlayerWin(int Id)
 		}
 	}
 
-	// right -> left
+	// check "/"
 	for (int i = 0; i < 3; i++)
 	{
 		Cells.Empty();
