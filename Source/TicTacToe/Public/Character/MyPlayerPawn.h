@@ -40,7 +40,7 @@ protected:
 	
 public:
 	/** Create Widget "MainBoardWidget" */
-	void CreateMainBoardWidget();
+	void CreateMainBoardWidget(FString Level);
 	
 	/** Main Board */
 	UPROPERTY(VisibleAnywhere, Category = "HUD", meta=(AllowPrivateAccess=true))
@@ -106,5 +106,8 @@ private:
 	
 	/** Archive selected cells */
 	TArray<SelectedCell> Cells;
+	
+	/** Difficulty level */
+	FString DifficultyLevel;
 	
 };

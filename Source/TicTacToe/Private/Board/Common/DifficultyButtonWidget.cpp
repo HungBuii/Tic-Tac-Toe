@@ -35,7 +35,7 @@ void UDifficultyButtonWidget::OnButtonClicked()
 		if (PlayerPawn)
 		{
 			// Create MainBoardWidget
-			PlayerPawn->CreateMainBoardWidget();
+			PlayerPawn->CreateMainBoardWidget("Easy");
 		}
 	}
 }

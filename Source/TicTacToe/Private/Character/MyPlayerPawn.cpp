@@ -48,7 +48,7 @@ void AMyPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void AMyPlayerPawn::CreateMainBoardWidget()
+void AMyPlayerPawn::CreateMainBoardWidget(FString Level)
 {
 	if (MainBoardClass)
 	{
@@ -57,6 +57,7 @@ void AMyPlayerPawn::CreateMainBoardWidget()
 		if (MainBoardWidget)
 		{
 			MainBoardWidget->AddToPlayerScreen();
+			DifficultyLevel = Level;
 			bIsPlayerTurn = MenuWidget->CanPlayerGoFirst();
 			bIsGameOver = false;
 		}
@@ -96,7 +97,7 @@ void AMyPlayerPawn::PlayerMove(int Row, int Col)
 
 void AMyPlayerPawn::AIMove()
 {
-	if (!bIsPlayerTurn && !IsFullGrid() && !bIsGameOver)
+	if (DifficultyLevel == "Easy" && !bIsPlayerTurn && !IsFullGrid() && !bIsGameOver)
 	{
 		int Row = FMath::RandRange(0, MainBoardWidget->GetRow() - 1);
 		int Col = FMath::RandRange(0, MainBoardWidget->GetRow() - 1);
