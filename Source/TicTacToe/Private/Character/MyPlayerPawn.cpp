@@ -33,6 +33,8 @@ void AMyPlayerPawn::BeginPlay()
 	PlayerWinDelegate.AddDynamic(this, &AMyPlayerPawn::HumanWin);
 	AIWinDelegate.AddDynamic(this, &AMyPlayerPawn::AIWin);
 	DrawGameDelegate.AddDynamic(this, &AMyPlayerPawn::DrawGame);
+	XWinDelegate.AddDynamic(this, &AMyPlayerPawn::XWin);
+	OWinDelegate.AddDynamic(this, &AMyPlayerPawn::OWin);
 }
 
 // Called every frame
@@ -56,28 +58,37 @@ void AMyPlayerPawn::CreateMainBoardWidget(FString Level)
 			                                                 0), MainBoardClass);
 		if (MainBoardWidget)
 		{
-			MainBoardWidget->AddToPlayerScreen();
 			DifficultyLevel = Level;
-			bIsPlayerTurn = MenuWidget->CanPlayerGoFirst();
+			MainBoardWidget->AddToPlayerScreen();
 			bIsGameOver = false;
+			if (Level == "Easy" || Level == "Hard")
+			{
+				bIsPlayerTurn = MenuWidget->CanPlayerGoFirst();
+			}
+			if (Level == "PvP")
+			{
+				bIsXTurn = true;
+				bIsOTurn = false;
+				MainBoardWidget->ChangeTurnText("X Turn");
+			}
 		}
 	}
 
-	if (!bIsPlayerTurn)
+	if (!bIsPlayerTurn && (Level == "Easy" || Level == "Hard"))
 	{
 		SwitchAITurn();
 		MainBoardWidget->ChangeTurnText("AI Turn");
 	}
-	else
+	if (bIsPlayerTurn && (Level == "Easy" || Level == "Hard"))
 	{
-		bIsPlayerTurn = true;
 		MainBoardWidget->ChangeTurnText("Human Turn");
 	}
 }
 
 void AMyPlayerPawn::PlayerMove(int Row, int Col)
 {
-	if (bIsPlayerTurn && !IsFullGrid() && !bIsGameOver)
+	if (bIsPlayerTurn && !IsFullGrid() && !bIsGameOver && 
+		(DifficultyLevel == "Easy" || DifficultyLevel == "Hard"))
 	{
 		if (Grid[Row][Col] == 0) // its empty 
 		{
@@ -93,11 +104,47 @@ void AMyPlayerPawn::PlayerMove(int Row, int Col)
 			SwitchAITurn();
 		}
 	}
+	
+	if (bIsXTurn && !bIsOTurn && !IsFullGrid() && !bIsGameOver && 
+		DifficultyLevel == "PvP")
+	{
+		if (Grid[Row][Col] == 0) // its empty 
+		{
+			Grid[Row][Col] = 1; // 1: represent the X Player
+
+			MainBoardWidget->OnCellClicked(Row, Col, "X");
+			
+			if (StatusGameUpdate(1)) return;
+			
+			MainBoardWidget->ChangeTurnText("O Turn");
+			bIsXTurn = false;
+			bIsOTurn = true;
+		}
+	}
+	
+	if (!bIsXTurn && bIsOTurn && !IsFullGrid() && !bIsGameOver && 
+		DifficultyLevel == "PvP")
+	{
+		if (Grid[Row][Col] == 0) // its empty 
+		{
+			Grid[Row][Col] = 2; // 2: represent the O Player
+
+			MainBoardWidget->OnCellClicked(Row, Col, "O");
+			
+			if (StatusGameUpdate(2)) return;
+			
+			MainBoardWidget->ChangeTurnText("X Turn");
+			bIsXTurn = true;
+			bIsOTurn = false;
+		}
+	}
+	
 }
 
 void AMyPlayerPawn::AIMove()
 {
-	if (DifficultyLevel == "Easy" && !bIsPlayerTurn && !IsFullGrid() && !bIsGameOver)
+	if (!bIsPlayerTurn && !IsFullGrid() && !bIsGameOver && 
+	(DifficultyLevel == "Easy" || DifficultyLevel == "Hard"))
 	{
 		int Row = FMath::RandRange(0, MainBoardWidget->GetRow() - 1);
 		int Col = FMath::RandRange(0, MainBoardWidget->GetRow() - 1);
@@ -225,13 +272,25 @@ void AMyPlayerPawn::DrawGame()
 	MainBoardWidget->ChangeTurnText("Draw!");
 }
 
+void AMyPlayerPawn::XWin()
+{
+	MainBoardWidget->ChangeTurnText("X Won!");
+}
+
+void AMyPlayerPawn::OWin()
+{
+	MainBoardWidget->ChangeTurnText("O Won!");
+}
+
 bool AMyPlayerPawn::StatusGameUpdate(int Id)
 {
 	if (CheckPlayerWin(Id) && Id == 1)
 	{
 		bIsGameOver = true;
 		MainBoardWidget->DisableAllCells();
-		PlayerWinDelegate.Broadcast();
+		
+		if (DifficultyLevel == "Easy" || DifficultyLevel == "Hard") PlayerWinDelegate.Broadcast();
+		if (DifficultyLevel == "PvP") XWinDelegate.Broadcast();
 
 		for (SelectedCell Cell : Cells)
 		{
@@ -243,7 +302,9 @@ bool AMyPlayerPawn::StatusGameUpdate(int Id)
 	{
 		bIsGameOver = true;
 		MainBoardWidget->DisableAllCells();
-		AIWinDelegate.Broadcast();
+		
+		if (DifficultyLevel == "Easy" || DifficultyLevel == "Hard") AIWinDelegate.Broadcast();
+		if (DifficultyLevel == "PvP") OWinDelegate.Broadcast();
 
 		for (SelectedCell Cell : Cells)
 		{

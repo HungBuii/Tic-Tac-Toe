@@ -4,13 +4,9 @@
 // #include "Board/CellBoardWidget.h"
 #include "Board/Common/CellBoardWidget.h"
 
-#include "IPropertyTable.h"
 #include "Character/MyPlayerPawn.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
-#include "GameFramework/GameModeBase.h"
-#include "GameMode/GameModeInterface.h"
-#include "GameMode/TicTacToeGameMode.h"
 #include "Kismet/GameplayStatics.h"
 
 void UCellBoardWidget::NativeConstruct()

@@ -12,6 +12,8 @@ class UMainBoardWidget;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerWinDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAIWinDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDrawGameDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FXWinDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOWinDelegate);
 
 struct SelectedCell
 {
@@ -67,6 +69,8 @@ public:
 	FPlayerWinDelegate PlayerWinDelegate;
 	FAIWinDelegate AIWinDelegate;
 	FDrawGameDelegate DrawGameDelegate;
+	FXWinDelegate XWinDelegate;
+	FOWinDelegate OWinDelegate;
 	
 	UFUNCTION()
 	void HumanWin();
@@ -76,6 +80,12 @@ public:
 	
 	UFUNCTION()
 	void DrawGame();
+	
+	UFUNCTION()
+	void XWin();
+	
+	UFUNCTION()
+	void OWin();
 	
 	/** status game when check win/lose/draw */
 	bool StatusGameUpdate(int Id);
@@ -95,8 +105,15 @@ private:
 	bool bIsPlayerTurn = false;
 	
 	/** AI Turn */
-	
 	FTimerHandle AITurnWaitTimer;
+	
+	/** Player1 (X) Turn - PvP*/
+	UPROPERTY(VisibleAnywhere, Category="Select Turn Play", meta = (AllowPrivateAccess = "true"))
+	bool bIsXTurn = false;
+	
+	/** Player1 (X) Turn - PvP*/
+	UPROPERTY(VisibleAnywhere, Category="Select Turn Play", meta = (AllowPrivateAccess = "true"))
+	bool bIsOTurn = false;
 	
 	/** definition board 3x3 */
 	int Grid[3][3];

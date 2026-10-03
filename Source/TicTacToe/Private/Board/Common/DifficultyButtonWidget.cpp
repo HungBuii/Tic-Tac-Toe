@@ -38,4 +38,26 @@ void UDifficultyButtonWidget::OnButtonClicked()
 			PlayerPawn->CreateMainBoardWidget("Easy");
 		}
 	}
+	
+	if (DifficultyText->GetText().EqualTo(FText::FromString("Hard")))
+	{
+		AMyPlayerPawn* PlayerPawn = Cast<AMyPlayerPawn>(UGameplayStatics::GetPlayerPawn
+				(GetWorld(), 0));
+		if (PlayerPawn)
+		{
+			// Create MainBoardWidget
+			PlayerPawn->CreateMainBoardWidget("Hard");
+		}
+	}
+	
+	if (DifficultyText->GetText().EqualTo(FText::FromString("PvP")))
+	{
+		AMyPlayerPawn* PlayerPawn = Cast<AMyPlayerPawn>(UGameplayStatics::GetPlayerPawn
+				(GetWorld(), 0));
+		if (PlayerPawn)
+		{
+			// Create MainBoardWidget
+			PlayerPawn->CreateMainBoardWidget("PvP");
+		}
+	}
 }
